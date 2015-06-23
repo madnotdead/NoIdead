@@ -10,6 +10,7 @@ package entities
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.Mask;
 	import net.flashpunk.masks.Pixelmask;
+	import net.flashpunk.Sfx;
 	//import worlds.Game;
 	
 	/**
@@ -27,25 +28,39 @@ package entities
 	
 		private var bulletDirection:String;
 		private var spriteAnim:Spritemap;
+		private var _bulletSpeed:Number = 0;
+		private var _sound:Sfx = null;
 		
-		public function Bullet(x:Number=0, y:Number=0, direction:String = "NONE", graphic:Graphic=null, mask:Mask=null) 
+		public function Bullet(x:Number=0, y:Number=0, direction:String = "NONE", owner:String = "NONE", graphic:Graphic=null, mask:Mask=null) 
 		{
 			graphic = new Image(Assets.BULLET);
 			
-			var num:Number = Utils.randomRange(1, 6);
-			
-			if(num>3)
-				spriteAnim = new Spritemap(Assets.BULLET_BLUE_ANIM, 16, 16);
-			else
-				spriteAnim = new Spritemap(Assets.BULLET_RED_ANIM, 16, 16);
+			if (owner == "NONE")
+			{
+				var num:Number = Utils.randomRange(1, 6);
 				
+				if(num>3)
+					spriteAnim = new Spritemap(Assets.BULLET_BLUE_ANIM, 16, 16);
+				else
+					spriteAnim = new Spritemap(Assets.BULLET_RED_ANIM, 16, 16);
+					
+				_bulletSpeed = Constants.BULLET_SPEED;
+				_sound = new Sfx(Assets.BULLET_SOUND);
+			}	
+			else
+			{
+				_bulletSpeed = Constants.PLAYER_BULLET_SPEED;
+				spriteAnim = new Spritemap(Assets.PLAYER_BULLET_ANIM, 16, 16);
+				_sound = new Sfx(Assets.PLAYER_SHOOT);
+			}
+			
 			spriteAnim.add("bullet", [0, 1, 2, 3], 10);
 			
 			graphic = spriteAnim;
 			
 			mask = new Pixelmask(Assets.BULLET);
 			
-			type = Constants.BULLET_TYPE;
+			type = owner != "NONE" ? Constants.PLAYER_BULLET_TYPE :Constants.BULLET_TYPE;
 			
 			bulletDirection = direction;
 			
@@ -57,39 +72,69 @@ package entities
 		{
 			super.added();
 			
-			if (bulletDirection == Constants.LEFT)
+			if (type == Constants.BULLET_TYPE)
 			{
-				speedX = Constants.INITIAL_SPEED;
-				speedY = Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
-				x = 100;
-				y = Utils.randomRange(100, 500);
+				if (bulletDirection == Constants.LEFT)
+				{
+					speedX = _bulletSpeed;
+					speedY = Utils.randomRange( -_bulletSpeed, _bulletSpeed);
+					x = 145;
+					y = Utils.randomRange(175, 360);
+				}
+				
+				if (bulletDirection == Constants.RIGHT)
+				{
+					speedX = -_bulletSpeed;
+					speedY = Utils.randomRange( -_bulletSpeed, _bulletSpeed);
+					x = 445;
+					y = Utils.randomRange(175, 360);
+				}
+				
+				if (bulletDirection == Constants.UP)
+				{
+					speedY = _bulletSpeed;
+					speedX = Utils.randomRange( -_bulletSpeed, _bulletSpeed);;
+					y = 175;
+					x = Utils.randomRange(145, 445);
+				}
+				
+				if (bulletDirection == Constants.DOWN)
+				{
+					speedY = -_bulletSpeed;
+					speedX = Utils.randomRange( -_bulletSpeed, _bulletSpeed);
+					y = 360;
+					x = Utils.randomRange(145, 445);
+				}
 			}
-			
-			if (bulletDirection == Constants.RIGHT)
+			else
 			{
-				speedX = -Constants.INITIAL_SPEED;
-				speedY = Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
-				x = 500;
-				y = Utils.randomRange(100, 500);
-			}
-			
-			if (bulletDirection == Constants.UP)
-			{
-				speedY = Constants.INITIAL_SPEED;
-				speedX = Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);;
-				y = 100;
-				x = Utils.randomRange(100, 500);
-			}
-			
-			if (bulletDirection == Constants.DOWN)
-			{
-				speedY = -Constants.INITIAL_SPEED;
-				speedX = Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
-				y = 500;
-				x = Utils.randomRange(100, 500);
+				if (bulletDirection == Constants.LEFT)
+				{
+					speedX = _bulletSpeed;
+					speedY = 0
+				}
+				
+				if (bulletDirection == Constants.RIGHT)
+				{
+					speedX = -_bulletSpeed;
+					speedY = 0;
+				}
+				
+				if (bulletDirection == Constants.UP)
+				{
+					speedY = _bulletSpeed;
+					speedX = 0;
+				}
+				
+				if (bulletDirection == Constants.DOWN)
+				{
+					speedY = -_bulletSpeed;
+					speedX = 0;
+				}
 			}
 			
 			spriteAnim.play("bullet");
+			_sound.play();
 		}
 		
 		override public function update():void 
@@ -103,7 +148,7 @@ package entities
 			
 			var e:Entity = collide("level", x, y);
 			
-			if (x < 100 || x > 500|| y < 0 || y > 500 || e)
+			if (e)
 				FP.world.remove(this);
 		}
 		

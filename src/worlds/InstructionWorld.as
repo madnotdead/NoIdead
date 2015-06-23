@@ -1,5 +1,6 @@
 package worlds 
 {
+	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.utils.Input;
@@ -15,28 +16,32 @@ package worlds
 		
 		private var _background:Image = null;
 		private var _instruction:Image = null;
+		private var _instructionHolder:Entity = null;
 		public function InstructionWorld() 
 		{
 			super();
-			
+			FP.screen.color = 0xFFFFFF;
 			//_background = new Image(Assets.PLAY);
-			//_instruction = new Image(Assets.INSTRUCTIONS);
+			_instruction = new Image(Assets.INSTRUCTIONS);
 		}
 		
 		override public function begin():void 
 		{
 			super.begin();
 			
-			addGraphic(_background, 100);
-			addGraphic(_instruction);
+			//addGraphic(_background, 100);
+			_instructionHolder = addGraphic(_instruction);
 		}
 		
 		override public function update():void 
 		{
 			super.update();
 			
-			if (Input.pressed(Key.SPACE))
+			if (Input.pressed(Key.ANY))
+			{
+				remove(_instructionHolder);
 				FP.world = new GameWorld();
+			}
 		}
 	}
 

@@ -36,7 +36,9 @@ package worlds
 			super.begin();
 			//_background = new Image(Assets.INTRO_BACKGROUND);
 			
-			
+			_holder = new Image(Assets.HOLDER);
+			_holder.x = (FP.screen.width - _holder.scaledWidth) / 2;
+			_holder.y = 190;
 			_titleText = new Text("No IDead");
 			_titleText.scale = 3;
 			_titleText.y = 50;
@@ -53,7 +55,7 @@ package worlds
 			//addGraphic(_background);
 			addGraphic(_titleText);
 			addGraphic(_pressText);
-			
+			addGraphic(_holder);
 			addTween(_pressColorTween);
 		}
 		

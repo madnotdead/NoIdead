@@ -52,16 +52,16 @@ package entities
 			{
 				_speedX = Constants.INITIAL_SPEED;
 				_speedY = 0;// Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
-				x = 0;
-				y = Utils.randomRange(0, FP.screen.height -16);
+				x = 145;
+				y = Utils.randomRange(145,360);
 			}
 			
 			if (_direction == Constants.RIGHT)
 			{
 				_speedX = -Constants.INITIAL_SPEED;
 				_speedY = 0;// Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
-				x = FP.screen.width;
-				y = Utils.randomRange(0, FP.screen.height-16);
+				x = 445-16;
+				y = Utils.randomRange(145, 360-16);
 			}
 			
 			if (_direction == Constants.UP)
@@ -69,8 +69,8 @@ package entities
 				_speedX = 0;// Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);;
 				_speedY = Constants.INITIAL_SPEED;
 				
-				y = 0;
-				x = Utils.randomRange(0, FP.screen.width-16);
+				y = 145;
+				x = Utils.randomRange(145, 445-16);
 			}
 			
 			if (_direction == Constants.DOWN)
@@ -78,8 +78,8 @@ package entities
 				_speedX = 0;// Utils.randomRange(-Constants.INITIAL_SPEED,Constants.INITIAL_SPEED);
 				_speedY = -Constants.INITIAL_SPEED;
 				
-				x = Utils.randomRange(0, FP.screen.width - 16);
-				y = FP.screen.height;
+				x = Utils.randomRange(145, 445- 16);
+				y = 360-16;
 			}
 			
 			
@@ -90,13 +90,23 @@ package entities
 		{
 			super.update();
 			
-			if ( Point.distance( Position,GameWorld(world).currentPlayer.Position) < 100)
+			if ( Point.distance( Position,GameWorld(world).currentPlayer.Position) < 50)
 			{
 				moveTowards(GameWorld(world).currentPlayer.Position.x, GameWorld(world).currentPlayer.Position.y, _chasingSpeed * FP.elapsed, "level");
 			}
 			else
 			{
 				moveBy(_speedX * FP.elapsed, _speedY * FP.elapsed, "level");
+			}
+			
+			var bullet:Bullet = collide(Constants.PLAYER_BULLET_TYPE, x, y) as Bullet;
+			
+			if (bullet)
+			{
+				FP.world.remove(bullet);
+				FP.world.remove(this);
+				
+				GameWorld(world).GameScore.AddScore(17);
 			}
 			
 			_position.x = x;

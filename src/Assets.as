@@ -6,14 +6,17 @@ package
 	 */
 	public class Assets 
 	{
-			//[Embed(source = "../../assets/levels/L_01.oel", mimeType = "application/octet-stream")]
-		//public static const LEVEL_01:Class;
+		[Embed(source="../levels/L_O1.oel", mimeType="application/octet-stream")]
+		public static const LEVEL_01:Class;
 		//
 		//[Embed(source = "../../assets/levels/L_02.oel", mimeType = "application/octet-stream")]
 		//public static const LEVEL_02:Class;
 		//
-		//[Embed(source="../../assets/images/tiles.png")]
-		//public static const TILES:Class;
+		[Embed(source="../assets/images/tiles.png")]
+		public static const TILES:Class;
+		
+		[Embed(source="../assets/images/spritesforyou.png")]
+		public static const TILES2:Class;
 		//
 		//[Embed(source="../../assets/images/background.png")]
 		//public static const BACKGROUND:Class;
@@ -63,6 +66,27 @@ package
 		
 		[Embed(source="../assets/images/enemy.png")]
 		public static const ENEMY_ANIM:Class;
+		
+		[Embed(source = "../assets/images/bullet_player_anim.png")]
+		public static const PLAYER_BULLET_ANIM:Class;
+		
+		[Embed(source="../assets/audio/shoot1.mp3")]
+		public static const PLAYER_SHOOT:Class;
+		
+		[Embed(source = "../assets/audio/pick_item.mp3")]
+		public static const PICK_ITEM:Class;
+		
+		[Embed(source="../assets/audio/blastoff.mp3")]
+		public static const BULLET_SOUND:Class;
+		
+		[Embed(source = "../assets/audio/song.mp3")]
+		public static const MAIN:Class;
+		
+		[Embed(source = "../assets/images/holder.png")]
+		public static const HOLDER:Class;
+		
+		[Embed(source = "../assets/images/instructions.png")]
+		public static const INSTRUCTIONS:Class;
 	}
 
 }

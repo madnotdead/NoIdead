@@ -1,6 +1,7 @@
 package entities 
 {
 	import flash.geom.Point;
+	import misc.Constants;
 	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
@@ -28,36 +29,43 @@ package entities
 		private var position:Point = null;
 		private var pickUpSfx:Sfx = null;
 		//private var spriteS:Spritemap = null;
+		
+		private var _itemType:int;
+		private var _sound:Sfx = null;
 		public function Item(x:Number=0, y:Number=0, graphic:Graphic=null, mask:Mask=null) 
 		{
 			
 			itemIndex = Utils.randomRange(0, 902);
 			trace("itemIndex: " + itemIndex);
-			if (itemIndex > 800)
+			if (itemIndex > 900)
 			{
 				image = new Image(Assets.ITEM_1);
+				_itemType = Constants.ITEM_TYPE_1;
 			}
 			else
 			{	
 				if (itemIndex > 200 && itemIndex <= 800)
 				{
 						image = new Image(Assets.ITEM_2);
+						_itemType = Constants.ITEM_TYPE_2;
 				}
 				else
 				{
 					if (itemIndex > 100 && itemIndex <= 200)
 					{
 						image = new Image(Assets.ITEM_3);
+						_itemType = Constants.ITEM_TYPE_3;
 					}
 					else
 					{
 						image = new Image(Assets.ITEM_4);
+						_itemType = Constants.ITEM_TYPE_4;
 					}
 				}
 			}
 			
 			//pickUpSfx = new Sfx(Assets.PICK_UP);
-			
+			_sound = new Sfx(Assets.PICK_ITEM);
 			graphic = image;
 			
 			mask = new Pixelmask(Assets.ITEM_1);
@@ -113,6 +121,17 @@ package entities
 		public function collected():void{
 			pickUpSfx.play();
 			
+			FP.world.remove(this);
+		}
+		
+		public function get ItemType():int
+		{
+			return _itemType;
+		}
+		
+		public function Collected():void
+		{
+			_sound.play();
 			FP.world.remove(this);
 		}
 	}

@@ -21,7 +21,8 @@ package
 			super.init();
 			trace("game initialized");
 			
-			FP.world = new IntroWorld();			
+			//FP.world = new IntroWorld();			
+			FP.world = new IntroWorld();
 			FP.console.enable();
 			FP.console.toggleKey = 188;
 		}

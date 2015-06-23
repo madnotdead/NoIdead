@@ -7,6 +7,7 @@ package worlds
 	import entities.Score;
 	import entities.Timer;
 	import net.flashpunk.Entity;
+	import net.flashpunk.graphics.Text;
 	//import entities.Word;
 	import misc.Constants;
 	import misc.Utils;
@@ -25,7 +26,7 @@ package worlds
 		
 		public var GameScore:Score = null;
 		
-		private var _phaseTime:Number = 10;
+		private var _phaseTime:Number = 17;
 		
 		private var _gameTimeCounter:Number = 0;
 		
@@ -50,25 +51,56 @@ package worlds
 		private var _player:Player = null;
 		
 		private var _itemSpawnRate:Number = 1;
+		
 		private var _itemSpawnCount:Number = 0;
 		
 		private var _enemySpawnRate:Number = 1;
+		
 		private var _enemySpawnCounter:Number = 0;
 		
 		private var _bulletSpawnRate:Number = 1;
+		
 		private var _bulletSpawnCounter:Number = 0;
 		
 		private var _currentEnemyDirection:String = Constants.LEFT;
+		
 		private var _cameraY:Number = 100;
+		
 		private var _cameraX:Number = 100;
+		
 		private var _cameraSize:Number = 400;
+		
+		private var _playerHealth:Text = null;
+		
+		private var _rounds:Number = 0;
+		
+		private var _roundsText:Text = null;
+		
+		private var _level:Level = null;
+		
+		private var _sound:Sfx = null;
+		
+		private var _phaseText:Text = null;
+		
 		public function GameWorld() 
 		{
 			FP.screen.color = 0x330000;
 			GameScore = new Score(_cameraSize, _cameraSize + 75,1);
 			_timer = new Timer(210, 60, 0, false);
 			_player = new Player(FP.screen.width / 2, FP.screen.height / 2);
-			
+			_playerHealth = new Text("HEALTH: " + _player.Health);
+			_playerHealth.x = 100;
+			_playerHealth.y = 475;
+			_roundsText = new Text("ROUNDS: " + _rounds);
+			_roundsText.x = 100;
+			_roundsText.y = 450;
+			_level = new Level(Assets.LEVEL_01);
+			_sound = new Sfx(Assets.MAIN);
+			_phaseText = new Text(getPasheByIndex(_currentPhase));
+						_phaseText.scale = 2;
+			_phaseText.x = (FP.screen.width -_phaseText.scaledWidth) / 2;
+			_phaseText.y = 120;
+
 			//_background = new Image(Assets.PLAY);
 			
 			//_mainTheme = new Sfx(Assets.MAIN);
@@ -79,13 +111,21 @@ package worlds
 		{
 			super.begin();
 			//addGraphic(_background,100);
-			add(GameScore);
+
+			add(_level);
+
 			add(_timer);
 			add(_player);
-			
+			addGraphic(_playerHealth);
+			addGraphic(_roundsText);
+			add(GameScore);
+			addGraphic(_phaseText);
 			FP.camera.x = 100;
 			FP.camera.y = 100;
 			FP.screen.scale = 1.5;
+			
+			//BackgroundChange(_currentPhase);
+			_sound.loop();
 		}
 		override public function update():void 
 		{
@@ -137,13 +177,22 @@ package worlds
 			if (_timer.Time % _phaseTime == 0)
 			{ 
 				_gameTimeCounter += FP.elapsed;
-				
+
+			
 				if (_gameTimeCounter >= 1)
 				{
 					GetNextPhase();
-					//trace("Current phase after GetNextPhase(): " + _currentPhase);
 					_gameTimeCounter = 0;
 				}
+			}
+			
+			_playerHealth.text = "HEALTH: " + _player.Health;
+			_roundsText.text = "ROUNDS: " + _rounds;
+			_phaseText.text = getPasheByIndex(_currentPhase);
+			if (_player.IsDead)
+			{
+				_sound.stop();
+				FP.world = new GameOverWorld(_timer.Time, _rounds, GameScore.GetScore);
 			}
 			
 		}
@@ -162,6 +211,11 @@ package worlds
 			
 				trace("prevPhase: " + _prevPhase);
 				trace("_currentPhase: " + _currentPhase);
+
+			BackgroundChange(_currentPhase);
+			
+			_player.SetCanShoot = (_currentPhase == Constants.DESTROY);
+			_rounds++;
 		}
 		
 		private function CleanPrevPhase(prevPhase:Number):void
@@ -178,6 +232,7 @@ package worlds
 				var bulletsArray:Array = new Array();
 				getType("bullet", bulletsArray);
 				removeList(bulletsArray);
+				_player.SetCanShoot = false;
 			}
 			
 			if (prevPhase == Constants.DESTROY)
@@ -185,6 +240,7 @@ package worlds
 				var enemiesArray:Array = new Array();
 				getType("enemy", enemiesArray);
 				removeList(enemiesArray);
+
 			}
 		}
 		
@@ -217,6 +273,42 @@ package worlds
 		public function get currentPlayer():Player
 		{
 			return _player;
+		}
+		
+		private function BackgroundChange(currentPhase:Number):void
+		{
+			switch(currentPhase)
+			{
+				case Constants.SURVIVE:
+					_level.collect_tile_layer.visible = false;
+					_level.destroy_tile_layer.visible = false;
+					_level.survive_tile_layer.visible = true;
+					break;
+				case Constants.COLLECT:
+					_level.collect_tile_layer.visible = true;
+					_level.destroy_tile_layer.visible = false;
+					_level.survive_tile_layer.visible = false;
+					break;
+				case Constants.DESTROY:
+					_level.collect_tile_layer.visible = false;
+					_level.destroy_tile_layer.visible = true;
+					_level.survive_tile_layer.visible = false;
+					break;
+			}
+		}
+		
+		private function getPasheByIndex(index:Number):String
+		{
+			if (index == Constants.COLLECT)
+				return "COLLECT";
+			
+			if (index == Constants.DESTROY)
+				return "DESTROY";
+			
+			if (index == Constants.SURVIVE)
+				return "SURVIVE";
+				
+			return "INVALID";
 		}
 	}
 

@@ -17,7 +17,7 @@ package entities
 		{
 			graphic = new Text("Score: " + _score);
 			Text(graphic).scale = scale;
-			layer = 50;
+
 			super(x, y, graphic, mask);
 		}
 		
@@ -30,6 +30,7 @@ package entities
 			_score+= nScore;
 			Text(graphic).text = "Score: " + _score;
 		}
+
 	}
 
 }

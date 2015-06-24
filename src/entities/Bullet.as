@@ -86,8 +86,8 @@ package entities
 				{
 					speedX = -_bulletSpeed;
 					speedY = Utils.randomRange( -_bulletSpeed, _bulletSpeed);
-					x = 445;
-					y = Utils.randomRange(175, 360);
+					x = 445-16;
+					y = Utils.randomRange(175, 360-16);
 				}
 				
 				if (bulletDirection == Constants.UP)
@@ -95,15 +95,15 @@ package entities
 					speedY = _bulletSpeed;
 					speedX = Utils.randomRange( -_bulletSpeed, _bulletSpeed);;
 					y = 175;
-					x = Utils.randomRange(145, 445);
+					x = Utils.randomRange(145, 445 -16);
 				}
 				
 				if (bulletDirection == Constants.DOWN)
 				{
 					speedY = -_bulletSpeed;
 					speedX = Utils.randomRange( -_bulletSpeed, _bulletSpeed);
-					y = 360;
-					x = Utils.randomRange(145, 445);
+					y = 360-16;
+					x = Utils.randomRange(145, 445-16);
 				}
 			}
 			else

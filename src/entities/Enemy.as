@@ -53,7 +53,7 @@ package entities
 				_speedX = Constants.INITIAL_SPEED;
 				_speedY = 0;// Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
 				x = 145;
-				y = Utils.randomRange(145,360);
+				y = Utils.randomRange(175,360 - 16);
 			}
 			
 			if (_direction == Constants.RIGHT)
@@ -61,7 +61,7 @@ package entities
 				_speedX = -Constants.INITIAL_SPEED;
 				_speedY = 0;// Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);
 				x = 445-16;
-				y = Utils.randomRange(145, 360-16);
+				y = Utils.randomRange(175, 360-16);
 			}
 			
 			if (_direction == Constants.UP)
@@ -69,7 +69,7 @@ package entities
 				_speedX = 0;// Utils.randomRange( -Constants.INITIAL_SPEED, Constants.INITIAL_SPEED);;
 				_speedY = Constants.INITIAL_SPEED;
 				
-				y = 145;
+				y = 175;
 				x = Utils.randomRange(145, 445-16);
 			}
 			
